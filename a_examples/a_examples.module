@@ -1,0 +1,82 @@
+<?php
+
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+function a_examples_menu() {
+   $items = array();
+   $items['settings'] = array(
+        'title' => t('Settings'),
+        'description' => t('Seting'),
+        'page callback' => 'a_option_settings_root',
+        'access callback' => true,
+    );
+    $items['settings/company'] = array(
+        'title' => t('Company'),
+        'description' => t('Settings for ticket system'),
+        'type' => MENU_DEFAULT_LOCAL_TASK,
+        'weight' => 0,
+    );
+    $items['settings/mail'] = array(
+      'title' => t('Mail'),
+      'description' => t('Settings for Ticket System'),
+      'access callback' => true,
+      'page callback' => 'a_option_settings_mail',
+      'type' => MENU_LOCAL_TASK,
+      'weight' => 2,
+    );
+    
+    $items['ex_angular'] = array(
+      'title' => t('Angular Example'),
+      'access callback' => TRUE,
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('ex_angular_form'),
+      'type' => MENU_NORMAL_ITEM,
+    );
+    return $items;
+}
+
+
+function ex_angular_form($form, &$form_state) {
+  $path = drupal_get_path('module', 'a_examples');
+  $form['textfield'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Main Field'),
+    '#atributes' => array('class' => array('ng-model="name"'))
+  );
+  $form['#attributes']['ng-app'] = 'ExAngularApp';
+ // $form['#attributes']['ng-controller'] = 'CloneTextController';
+  $form['#attached'] = array(
+     'js' => array(
+        'https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js',
+        $path . '/a_examples.js',
+     ),
+   );
+  
+  $form['#theme'] = 'ex_angular_text';
+  // Define app's name taht integrated with Angulajs Bootstrap.
+//  $form['#attributes']['ng-app'] = 'ExAngularApp';
+//  $form['#attributes']['ng-controller'] = 'ExAngularApp.CloneTextController';
+ 
+  return $form;
+}
+function a_option_settings_mail() {
+    return 'page mail';
+}
+
+function a_examples_theme() {
+ return array(
+   'ex_angular_text' => array(
+     'template' => 'ex-angular-text',
+     'variables' => array(),
+   ),
+ ); 
+}
+function a_examples_add_js(&$form, $form_state) {
+  a_utility_libraries_load_to_form('angular', $form);
+
+ 
+}
+?>
